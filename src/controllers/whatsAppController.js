@@ -24,6 +24,7 @@ const recievedMessage = (req, res) => {
     const messageObject = value['messages'];
 
     myConsole.log(messageObject);
+    console.log(JSON.stringify(messageObject));
     return res.send('EVENT_RECEIVED');
   } catch (error) {
     res.send('EVENT_RECEIVED');
