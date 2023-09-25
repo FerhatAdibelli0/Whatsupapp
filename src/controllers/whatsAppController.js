@@ -28,10 +28,10 @@ const recievedMessage = (req, res) => {
       const message = messageObject[0];
       const text = getTextUser(message);
       const number = message['from'];
-      // whatsappService.sendMessageWhatsapp(
-      //   'Otomatik gelen mesaj :' + text,
-      //   number
-      // );
+      whatsappService.sendMessageWhatsapp(
+        'Otomatik gelen mesaj :' + text,
+        number
+      );
       myConsole.log(message);
       console.log(text);
     }
