@@ -1,4 +1,5 @@
 const fs = require('fs');
+const whatsappService = require('../services/whatsappService');
 
 const myConsole = new console.Console(fs.createWriteStream('./logs.txt'));
 const verifyToken = (req, res) => {
@@ -23,12 +24,42 @@ const recievedMessage = (req, res) => {
     const value = changes['value'];
     const messageObject = value['messages'];
 
-    myConsole.log(messageObject);
-    console.log(JSON.stringify(messageObject));
+    if (typeof messageObject !== 'undefined') {
+      const message = messageObject[0];
+      const text = getTextUser(message);
+      const number = message['from'];
+      whatsappService.sendMessageWhatsapp(
+        'Otomatik gelen mesaj :' + text,
+        number
+      );
+      myConsole.log(message);
+      console.log(text);
+    }
     return res.send('EVENT_RECEIVED');
   } catch (error) {
     res.send('EVENT_RECEIVED');
   }
+};
+
+const getTextUser = (messages) => {
+  let text = '';
+  const messageType = messages['type'];
+  if (messageType === 'text') {
+    text = messages['text']['body'];
+  } else if (messageType === 'interactive') {
+    const interactiveObject = messages['interactive'];
+    const typeInteractive = messages['type'];
+    if (typeInteractive === 'button_reply') {
+      text = interactiveObject['button_reply']['title'];
+    } else if (typeInteractive === 'list_reply') {
+      text = interactiveObject['list_reply']['title'];
+    } else {
+      console.log('Error interactive message');
+    }
+  } else {
+    console.log('Error interactive message');
+  }
+  return text;
 };
 
 module.exports = {
